@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Flutter_Job_Portal
 
 A new Flutter project.
@@ -16,5 +16,3 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 =======
-# FlutterUI-Job-Portal
->>>>>>> 492d848d424d8989dbc3c82533d6a9bf73ff3bf4
