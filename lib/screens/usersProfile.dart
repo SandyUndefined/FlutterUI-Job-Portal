@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:ui';
+import 'package:Flutter_Job_Portal/screens/done.dart';
 import 'package:Flutter_Job_Portal/utils/colors.dart';
+import 'package:Flutter_Job_Portal/utils/screenVariable.dart';
 import 'package:Flutter_Job_Portal/widgets/button.dart';
 import 'package:Flutter_Job_Portal/widgets/textField.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +10,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 
 int _current = 0;
-int index = 4;
+int index = 3;
 int count = 0;
 TextEditingController _nameController = TextEditingController();
 FocusNode _nameControllerFocus = FocusNode();
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+late Timer _timer;
+int _start = 10;
+CarouselController buttonCarouselController = CarouselController();
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -20,6 +27,36 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          setState(() {
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -35,9 +72,11 @@ class _UserProfileState extends State<UserProfile> {
                 width: size.width,
                 child: Container(
                     child: CarouselSlider(
+                  carouselController: buttonCarouselController,
                   options: CarouselOptions(
                     onPageChanged: (index, reason) {
                       setState(() {
+                        print(index);
                         _current = index;
                       });
                     },
@@ -67,7 +106,19 @@ class _UserProfileState extends State<UserProfile> {
               )
             ]),
             SizedBox(height: 38),
-            ButtonWidget(onPressed: () {}, child: Text("Next"))
+            ButtonWidget(
+                onPressed: () {
+                  if (_current == 3) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Done()));
+                  } else {
+                    buttonCarouselController.nextPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.linear);
+                    // Navigator.push(context,index++);
+                  }
+                },
+                child: Text("Next"))
           ],
         ),
       ),
@@ -165,7 +216,7 @@ final List<Widget> imageSliders = <Widget>[
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: Image.asset(
-              "assets/images/form.png",
+              "assets/images/employee2.png",
               height: 170,
               width: 230,
             ),
@@ -174,7 +225,7 @@ final List<Widget> imageSliders = <Widget>[
           Text(
             "What is your name?",
             style: TextStyle(
-                color: Color(0xFF585858),
+                color: colorSelectedButton,
                 fontSize: 21,
                 fontStyle: FontStyle.normal,
                 fontWeight: FontWeight.w700),
@@ -214,6 +265,8 @@ final List<Widget> imageSliders = <Widget>[
       ),
     ),
   ),
+
+  // Third Slider
   SingleChildScrollView(
     child: Container(
       margin: EdgeInsets.only(left: 25.0, right: 25.0),
@@ -291,9 +344,11 @@ final List<Widget> imageSliders = <Widget>[
       ),
     ),
   ),
+
+  // Fourth Slider
   SingleChildScrollView(
     child: Container(
-      margin: EdgeInsets.only(left: 25.0, right: 25.0),
+      // margin: EdgeInsets.only(left: 25.0, right: 25.0),
       child: Column(
         children: <Widget>[
           Padding(
@@ -305,114 +360,59 @@ final List<Widget> imageSliders = <Widget>[
             ),
           ),
           SizedBox(height: 40),
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-            child: Text(
-              "Type of job post",
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 22,
-                  fontStyle: FontStyle.normal,
-                  color: Color(0xFF585858)),
-            ),
+          Text(
+            "Type of job post",
+            style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 22,
+                fontStyle: FontStyle.normal,
+                color: Color(0xFF585858)),
           ),
           SizedBox(height: 25),
           CustomRadioButton(
-            horizontal: true,
-            unSelectedColor: colorRed,
+            height: 45,
+            enableButtonWrap: true,
+            autoWidth: true,
+            elevation: 3,
+            enableShape: true,
+            shapeRadius: 5,
+            padding: 0,
+            selectedBorderColor: colorSelectedButton,
+            unSelectedBorderColor: colorUnselectedButton,
+            unSelectedColor: colorUnselectedButton,
             buttonLables: [
               'Marketing',
-              'Logistics',
               'Finance',
+              'Logistics',
               'Human Resource',
               '+ custom'
             ],
-            buttonValues: ["STUDENT", "PARENT", "TEACHER", 'hgfh', 'jhgiugx'],
+            buttonValues: [
+              "STUDENT",
+              "PARENT",
+              "TEACHER",
+              'Human Resource',
+              'custom'
+            ],
             defaultSelected: "STUDENT",
+            buttonTextStyle: ButtonTextStyle(
+                textStyle: TextStyle(
+                    fontSize: 14,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                    color: colorSecondaryText)),
             radioButtonValue: (value) {
               print(value);
             },
-            selectedColor: colorPrimary,
+            selectedColor: colorSelectedButton,
           ),
         ],
       ),
     ),
   ),
-  Container(
-    margin: EdgeInsets.only(left: 25.0, right: 25.0),
-    child: Column(children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.only(top: 70.0),
-        child: Image.asset(
-          "assets/images/done.png",
-          height: 170,
-          width: 230,
-        ),
-      ),
-      SizedBox(height: 40),
-      Text("Hurrey!",
-          style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              fontStyle: FontStyle.normal,
-              color: colorPrimary)),
-      SizedBox(height: 15),
-      Text(
-          "Your registration is done successfully. \n   Your company’s unique code is",
-          style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              fontStyle: FontStyle.normal,
-              color: Color(0xFF898E8A))),
-      SizedBox(height: 15),
-      Text("473XYZ54",
-          style: TextStyle(
-              fontSize: 22,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF55524C)))
-    ]),
-  ),
 ];
 
-// final List<Widget> imageSliders = imgList
-//     .map((item) => Container(
-//           child: Container(
-//             margin: EdgeInsets.all(5.0),
-//             child: ClipRRect(
-//                 borderRadius: BorderRadius.all(Radius.circular(5.0)),
-//                 child: Stack(
-//                   children: <Widget>[
-//                     Image.network(item, fit: BoxFit.cover, width: 1000.0),
-//                     Positioned(
-//                       bottom: 0.0,
-//                       left: 0.0,
-//                       right: 0.0,
-//                       child: Container(
-//                         decoration: BoxDecoration(
-//                           gradient: LinearGradient(
-//                             colors: [
-//                               Color.fromARGB(200, 0, 0, 0),
-//                               Color.fromARGB(0, 0, 0, 0)
-//                             ],
-//                             begin: Alignment.bottomCenter,
-//                             end: Alignment.topCenter,
-//                           ),
-//                         ),
-//                         padding: EdgeInsets.symmetric(
-//                             vertical: 10.0, horizontal: 20.0),
-//                         child: Text(
-//                           'No. ${imgList.indexOf(item)} image',
-//                           style: TextStyle(
-//                             color: Colors.white,
-//                             fontSize: 20.0,
-//                             fontWeight: FontWeight.bold,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 )),
-//           ),
-//         ))
-//     .toList();
+// Future<dynamic> route() {
+//   return navigatorKey.currentState!.pushNamed("homeScreen");
+// }
+
