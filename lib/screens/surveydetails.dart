@@ -1,80 +1,53 @@
-import 'dart:async';
-import 'package:Flutter_Job_Portal/screens/surveyhistory.dart';
-import 'package:Flutter_Job_Portal/screens/useraccount.dart';
-import 'package:Flutter_Job_Portal/utils/datetimepicker.dart';
-import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:Flutter_Job_Portal/screens/done.dart';
-import 'package:Flutter_Job_Portal/screens/usersProfile.dart';
+import 'package:Flutter_Job_Portal/screens/surveyfilter.dart';
 import 'package:Flutter_Job_Portal/utils/colors.dart';
-import 'package:Flutter_Job_Portal/widgets/button.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-int _current = 0;
-
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class SurveyDetails extends StatefulWidget {
+  const SurveyDetails({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  _SurveyDetailsState createState() => _SurveyDetailsState();
 }
 
-class _HomeState extends State<Home> {
-  late Timer _timer;
+class _SurveyDetailsState extends State<SurveyDetails> {
   double _pointerValue = 50;
-
-  @override
-  void initState() {
-    _timer = Timer(const Duration(milliseconds: 1500), () {
-      setState(() {
-        _pointerValue = 70.toDouble();
-      });
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorBackground,
       appBar: AppBar(
         backgroundColor: colorBackground,
         leading: InkWell(
-          onTap: () => print("this is working"),
+          onTap: () => Navigator.pop(context),
           child: Padding(
             padding: const EdgeInsets.all(18.0),
-            child: Image.asset("assets/images/hamburger.png"),
+            child: Image.asset("assets/images/back.png"),
           ),
         ),
         title: Text(
-          "Company name",
+          "Survey Details",
           style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
               fontStyle: FontStyle.normal,
               color: colorPrimaryText),
         ),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(18),
+            child: InkWell(
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SurveyFilter())),
+              child: Image.asset("assets/images/filter.png"),
+            ),
+          ),
+        ],
       ),
+      backgroundColor: colorBackground,
       body: Container(
         margin: EdgeInsets.only(left: 25, right: 25),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Latest survey results",
-                    style: TextStyle(
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w700,
-                        color: colorPrimaryText,
-                        fontSize: 20)),
-              ),
-            ),
-            SizedBox(height: 15),
             Align(
               alignment: Alignment.centerLeft,
               child: Text("12 Jun, Monday",
@@ -268,7 +241,7 @@ class _HomeState extends State<Home> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 22.0),
+              padding: const EdgeInsets.only(top: 30.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -443,282 +416,9 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-            SizedBox(height: 15),
-            ButtonWidget(
-                onPressed: () => bottomSheet(context),
-                child: Text("+ Create a new Survey"))
           ],
         ),
-      ),
-    );
-  }
-
-  void bottomSheet(BuildContext context) {
-    showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(25),
-          ),
-        ),
-        context: context,
-        builder: (context) {
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.55,
-            child: new Container(
-              decoration: new BoxDecoration(
-                  color: colorBackground,
-                  borderRadius: new BorderRadius.only(
-                      topLeft: const Radius.circular(20.0),
-                      topRight: const Radius.circular(20.0))),
-              child: Sliders(context),
-            ),
-          );
-        });
-  }
-
-  Widget Sliders(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 30),
-      child: Column(
-        children: <Widget>[
-          Container(
-            child: CarouselSlider(
-              carouselController: buttonCarouselController,
-              options: CarouselOptions(
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    print(index);
-                    _current = index;
-                  });
-                },
-                enableInfiniteScroll: false,
-                height: size.height * 0.3,
-                viewportFraction: 1,
-                aspectRatio: 2.0,
-                enlargeCenterPage: false,
-                scrollDirection: Axis.horizontal,
-                autoPlay: false,
-              ),
-              items: survey,
-            ),
-          ),
-          SizedBox(height: 25),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            Container(
-              width: _current == index ? 10.0 : 6.0,
-              height: _current == index ? 10.0 : 6.0,
-              margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _current == index
-                    ? Colors.black
-                    : Color.fromRGBO(0, 0, 0, 0.4),
-              ),
-            )
-          ]),
-          SizedBox(height: 20),
-          ButtonWidget(
-              onPressed: () {
-                if (_current == 2) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SurveyHistory()));
-                } else {
-                  buttonCarouselController.nextPage(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.linear);
-                  // Navigator.push(context,index++);
-                }
-              },
-              child: Text("Next"))
-        ],
       ),
     );
   }
 }
-
-final List<Widget> survey = <Widget>[
-  // First Sliders
-  Container(
-    child: Column(
-      children: [
-        Text(
-          "Select a catagoty do you want\n  to create a survey about?",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.w700),
-        ),
-        SizedBox(height: 20),
-        CustomRadioButton(
-          height: 45,
-          enableButtonWrap: true,
-          autoWidth: true,
-          elevation: 3,
-          enableShape: true,
-          shapeRadius: 5,
-          padding: 0,
-          selectedBorderColor: colorSelectedButton,
-          unSelectedBorderColor: colorUnselectedButton,
-          unSelectedColor: colorUnselectedButton,
-          buttonLables: [
-            'General',
-            'Accomodation',
-            'Food quality',
-            'Working conditions',
-            '+ custom'
-          ],
-          buttonValues: [
-            "STUDENT",
-            "PARENT",
-            "TEACHER",
-            'Human Resource',
-            'custom'
-          ],
-          defaultSelected: "STUDENT",
-          buttonTextStyle: ButtonTextStyle(
-              textStyle: TextStyle(
-                  fontSize: 14,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                  color: colorSecondaryText)),
-          radioButtonValue: (value) {
-            print(value);
-          },
-          selectedColor: colorSelectedButton,
-        ),
-      ],
-    ),
-  ),
-
-  // Second Slider
-  Container(
-    child: Column(
-      children: [
-        Text(
-          "When do you want to start\nthe survey?",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              color: colorPrimaryText,
-              fontSize: 20,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.w700),
-        ),
-        // DatePickerWidget(
-        //   looping: false, // default is not looping
-        //   firstDate: DateTime(1990, 01, 01),
-        //   lastDate: DateTime(2030, 1, 1),
-        //   initialDate: DateTime(1991, 10, 12),
-        //   dateFormat: "dd-MMM-yyyy",
-        //   // locale: DatePicker.localeFromString('en'),
-        //   // onChange: (DateTime newDate, _) => _selectedDate = newDate,
-        //   pickerTheme: DateTimePickerTheme(
-        //     pickerHeight: 80,
-        //     backgroundColor: colorBackground,
-        //     itemTextStyle: TextStyle(color: Colors.black, fontSize: 19),
-        //   ),
-        // ),
-        SizedBox(height: 20),
-        Text(
-          "Select a Duration",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              color: colorPrimaryText,
-              fontSize: 20,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.w700),
-        ),
-        SizedBox(height: 20),
-        CustomRadioButton(
-          height: 45,
-          enableButtonWrap: true,
-          autoWidth: true,
-          elevation: 3,
-          enableShape: true,
-          shapeRadius: 5,
-          padding: 0,
-          selectedBorderColor: colorSelectedButton,
-          unSelectedBorderColor: colorUnselectedButton,
-          unSelectedColor: colorUnselectedButton,
-          buttonLables: [
-            '1 day',
-            '2 days',
-            '3 days',
-          ],
-          buttonValues: [
-            "STUDENT",
-            "PARENT",
-            "TEACHER",
-          ],
-          defaultSelected: "STUDENT",
-          buttonTextStyle: ButtonTextStyle(
-              textStyle: TextStyle(
-                  fontSize: 14,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                  color: colorSecondaryText)),
-          radioButtonValue: (value) {
-            print(value);
-          },
-          selectedColor: colorSelectedButton,
-        ),
-      ],
-    ),
-  ),
-
-  // Third SLider
-  Container(
-    child: Column(
-      children: [
-        Text(
-          "Which department you want\n to create the survey for?",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              color: colorPrimaryText,
-              fontSize: 20,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.w700),
-        ),
-        SizedBox(height: 20),
-        CustomRadioButton(
-          height: 45,
-          enableButtonWrap: true,
-          autoWidth: true,
-          elevation: 3,
-          enableShape: true,
-          shapeRadius: 5,
-          padding: 0,
-          selectedBorderColor: colorSelectedButton,
-          unSelectedBorderColor: colorUnselectedButton,
-          unSelectedColor: colorUnselectedButton,
-          buttonLables: [
-            'Marketing',
-            'Finance',
-            'Logistics',
-            'Human Resource',
-            '+ custom'
-          ],
-          buttonValues: [
-            "STUDENT",
-            "PARENT",
-            "TEACHER",
-            'Human Resource',
-            'custom'
-          ],
-          defaultSelected: "STUDENT",
-          buttonTextStyle: ButtonTextStyle(
-              textStyle: TextStyle(
-                  fontSize: 14,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                  color: colorSecondaryText)),
-          radioButtonValue: (value) {
-            print(value);
-          },
-          selectedColor: colorSelectedButton,
-        ),
-      ],
-    ),
-  ),
-];

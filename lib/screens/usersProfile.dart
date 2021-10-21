@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:Flutter_Job_Portal/screens/done.dart';
+import 'package:Flutter_Job_Portal/screens/employeer.dart';
+import 'package:Flutter_Job_Portal/screens/homeScreen2.dart';
 import 'package:Flutter_Job_Portal/utils/colors.dart';
 import 'package:Flutter_Job_Portal/utils/screenVariable.dart';
 import 'package:Flutter_Job_Portal/widgets/button.dart';
@@ -145,30 +147,36 @@ final List<Widget> imageSliders = <Widget>[
     Container(
       width: 150,
       height: 150,
-      child: Card(
-        color: Color(0xFFFFD98E),
-        elevation: 4.0,
-        child: Padding(
-          padding:
-              const EdgeInsets.only(top: 20.0, left: 35, right: 35, bottom: 25),
-          child: Column(
-            children: <Widget>[
-              Image.asset(
-                "assets/images/employer.png",
-                height: 70,
-                width: 70,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  "Employer",
-                  style: TextStyle(
-                      fontStyle: FontStyle.normal,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400),
+      child: InkWell(
+        onTap: () {
+          buttonCarouselController.nextPage(
+              duration: Duration(milliseconds: 300), curve: Curves.linear);
+        },
+        child: Card(
+          color: Color(0xFFFFD98E),
+          elevation: 4.0,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                top: 20.0, left: 35, right: 35, bottom: 25),
+            child: Column(
+              children: <Widget>[
+                Image.asset(
+                  "assets/images/employer.png",
+                  height: 70,
+                  width: 70,
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    "Employer",
+                    style: TextStyle(
+                        fontStyle: FontStyle.normal,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -177,30 +185,35 @@ final List<Widget> imageSliders = <Widget>[
     Container(
       width: 150,
       height: 150,
-      child: Card(
-        color: Color(0xFFFFFAED),
-        elevation: 4.0,
-        child: Padding(
-          padding:
-              const EdgeInsets.only(top: 20.0, left: 35, right: 35, bottom: 25),
-          child: Column(
-            children: <Widget>[
-              Image.asset(
-                "assets/images/employee.png",
-                height: 70,
-                width: 70,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  "Employee",
-                  style: TextStyle(
-                      fontStyle: FontStyle.normal,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400),
+      child: InkWell(
+        onTap: () => navigatorKey.currentState!.push(MaterialPageRoute(
+          builder: (context) => Employeer(),
+        )),
+        child: Card(
+          color: Color(0xFFFFFAED),
+          elevation: 4.0,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                top: 20.0, left: 35, right: 35, bottom: 25),
+            child: Column(
+              children: <Widget>[
+                Image.asset(
+                  "assets/images/employee.png",
+                  height: 70,
+                  width: 70,
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    "Employee",
+                    style: TextStyle(
+                        fontStyle: FontStyle.normal,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
